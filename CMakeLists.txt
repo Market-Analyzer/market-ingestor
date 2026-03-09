@@ -14,6 +14,7 @@ find_package(OpenSSL REQUIRED)
 add_executable(MarketIngestor
   src/main.cpp
   src/transport/tls_context_factory.cpp
+  src/transport/rest_session.cpp
 )
 
 target_include_directories(MarketIngestor PRIVATE
