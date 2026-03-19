@@ -9,6 +9,9 @@
       "features": [ "ssl" ]
     },
     "boost-beast",
-    "openssl"
+    "boost-system",
+    "openssl",
+    "grpc",
+    "protobuf"
   ]
 }
