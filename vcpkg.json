@@ -5,8 +5,6 @@
   "dependencies": [
     "boost-asio",
     "boost-beast",
-    "boost-system",
-    "grpc",
-    "protobuf"
+    "boost-system"
   ]
 }
