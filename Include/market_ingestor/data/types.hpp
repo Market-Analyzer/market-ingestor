@@ -6,7 +6,7 @@
 
 namespace market_ingestor::data 
 {
-  namespace detail 
+  namespace types_details
   {
     template<typename Tag, typename T = uint64_t>
     class ArithmeticType
@@ -23,13 +23,13 @@ namespace market_ingestor::data
       constexpr ArithmeticType& operator+=(const ArithmeticType& rhs) { value += rhs.value; return *this; }
       constexpr ArithmeticType& operator-=(const ArithmeticType& rhs) { value -= rhs.value; return *this; }
 
-      [[nodiscard]] friend constexpr ArithmeticType operator+(const ArithmeticType& lhs, const ArithmeticType& rhs)
+      [[nodiscard]] friend constexpr ArithmeticType operator+(ArithmeticType lhs, const ArithmeticType& rhs)
       {
         lhs+=rhs;
         return lhs;
       }
 
-      [[nodiscard]] friend constexpr ArithmeticType operator-(const ArithmeticType& lhs, const ArithmeticType& rhs)
+      [[nodiscard]] friend constexpr ArithmeticType operator-(ArithmeticType lhs, const ArithmeticType& rhs)
       {
         lhs-=rhs;
         return lhs;
@@ -56,11 +56,13 @@ namespace market_ingestor::data
     struct OrderTag      {};
   }
 
-  using Volume = detail::ArithmeticType<detail::VolumeTag, uint64_t>;
-  using Price  = detail::ArithmeticType<detail::PriceTag,  int64_t>;
+  using Volume = types_details::ArithmeticType<types_details::VolumeTag, uint64_t>;
+  using Price  = types_details::ArithmeticType<types_details::PriceTag,  int64_t>;
 
-  using SymbolID = detail::DiscreteType<detail::SymbolTag, uint32_t>;
-  using OrderID  = detail::DiscreteType<detail::OrderTag,  uint64_t>;
+  using SymbolID = types_details::DiscreteType<types_details::SymbolTag, uint32_t>;
+  using OrderID  = types_details::DiscreteType<types_details::OrderTag,  uint64_t>;
+
+  inline constexpr OrderID InvalidOrderID{0};
 }
 
 #endif
