@@ -9,20 +9,17 @@ namespace market_ingestor::data
 {
   namespace types_details
   {
-    template<typename Tag, typename T = uint64_t>
+    template<typename Tag, std::integral T = uint64_t>
     class ArithmeticType
     {
-    private:
-      T value;
-
     public:
-      explicit constexpr ArithmeticType(T v) : value(v) {}
-      explicit constexpr operator T() const { return value; }
+      explicit constexpr ArithmeticType()    : value_{}  {}
+      explicit constexpr ArithmeticType(T v) : value_(v) {}
+      explicit constexpr operator T() const { return value_; }
 
       constexpr auto operator<=>(const ArithmeticType&) const = default;
-
-      constexpr ArithmeticType& operator+=(const ArithmeticType& rhs) { value += rhs.value; return *this; }
-      constexpr ArithmeticType& operator-=(const ArithmeticType& rhs) { value -= rhs.value; return *this; }
+      constexpr ArithmeticType& operator+=(const ArithmeticType& rhs) { value_ += rhs.value_; return *this; }
+      constexpr ArithmeticType& operator-=(const ArithmeticType& rhs) { value_ -= rhs.value_; return *this; }
 
       [[nodiscard]] friend constexpr ArithmeticType operator+(ArithmeticType lhs, const ArithmeticType& rhs)
       {
@@ -35,6 +32,9 @@ namespace market_ingestor::data
         lhs-=rhs;
         return lhs;
       }
+
+    private:
+      T value_;
     };
 
     
