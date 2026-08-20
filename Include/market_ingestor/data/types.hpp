@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <compare>
+#include <concepts>
 
 namespace market_ingestor::data 
 {
@@ -36,17 +37,21 @@ namespace market_ingestor::data
       }
     };
 
-    template<typename Tag, typename T>
+    
+    template<typename Tag, std::integral T = uint64_t, T SentinelValue = T{0}>
     class DiscreteType
     {
-      private:
-        T value;
+    public:
+      explicit constexpr DiscreteType(T v) : value_(v) {}
+      explicit constexpr operator T() const { return value_; }
 
-      public:
-        explicit constexpr DiscreteType(T v) : value(v) {}
-        explicit constexpr operator T() const { return value; }
+      [[nodiscard]] static constexpr DiscreteType sentinel() { return DiscreteType{SentinelValue}; }
+      [[nodiscard]] constexpr bool has_value() const { return value_ != SentinelValue; }
 
-        constexpr auto operator<=>(const DiscreteType&) const = default;
+      constexpr auto operator<=>(const DiscreteType&) const = default;
+      
+    private:
+      T value_;
     };
 
     
@@ -61,8 +66,6 @@ namespace market_ingestor::data
 
   using SymbolID = types_details::DiscreteType<types_details::SymbolTag, uint32_t>;
   using OrderID  = types_details::DiscreteType<types_details::OrderTag,  uint64_t>;
-
-  inline constexpr OrderID InvalidOrderID{0};
 }
 
 #endif
