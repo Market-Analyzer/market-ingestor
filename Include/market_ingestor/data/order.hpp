@@ -26,11 +26,11 @@ namespace market_ingestor::data
 
 
   struct OrderParams {
-    Volume    volume;
-    Price     price;
-    SymbolID  symbol_id;
-    OrderSide side;
-    OrderType type;
+    Volume    volume    = Volume{};
+    Price     price     = Price{};
+    SymbolID  symbol_id = SymbolID::sentinel();
+    OrderSide side      = OrderSide::NONE;
+    OrderType type      = OrderType::UNKNOWN;
   };
 
 
@@ -38,25 +38,13 @@ namespace market_ingestor::data
   {
   public:
     constexpr Order()
-    : order_id_(InvalidOrderID), volume_(Volume{0}), price_(Price{0}),
-      symbol_id_(SymbolID{0}), side_(OrderSide::NONE), 
+    : order_id_(OrderID::sentinel()), volume_{}, price_{},
+      symbol_id_(SymbolID::sentinel()), side_(OrderSide::NONE),
       type_(OrderType::UNKNOWN) {}
 
     constexpr Order(OrderID order_id, OrderParams p)
     : order_id_(order_id), volume_(p.volume), price_(p.price),
       symbol_id_(p.symbol_id), side_(p.side), type_(p.type) {}
-
-    constexpr Order& reset()
-    {
-      order_id_  = InvalidOrderID;
-      volume_    = Volume{0};
-      price_     = Price{0};
-      symbol_id_ = SymbolID{0};
-      side_      = OrderSide::NONE; 
-      type_      = OrderType::UNKNOWN;
-
-      return *this;
-    }
     
     constexpr Order& reinitialize(OrderID order_id, OrderParams p)
     {
@@ -68,6 +56,11 @@ namespace market_ingestor::data
       type_      = p.type;
 
       return *this;
+    }
+
+    constexpr Order& reset()
+    {
+      return reinitialize(OrderID::sentinel(), OrderParams{Volume{}, Price{}, SymbolID::sentinel(), OrderSide::NONE, OrderType::UNKNOWN});
     }
 
     constexpr Order& fill(const Volume v)
