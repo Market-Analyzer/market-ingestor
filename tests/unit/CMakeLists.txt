@@ -1,6 +1,7 @@
 find_package(GTest CONFIG REQUIRED)
 
 add_executable(MarketIngestorUnitTests
+  data/order_test.cpp
   data/types_test.cpp
 )
 
