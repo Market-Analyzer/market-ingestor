@@ -20,6 +20,4 @@ target_include_directories(MarketIngestor PRIVATE
 
 target_link_libraries(MarketIngestor PRIVATE
   Boost::system
-  Boost::asio
-  Boost::beast
 )
