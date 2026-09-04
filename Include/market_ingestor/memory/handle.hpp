@@ -28,15 +28,18 @@ namespace market_ingestor::memory
     constexpr Handle(SlotIndex i, generation_type g) noexcept
       : bits((g.value() << INDEX_BITS) | (i.value() & INDEX_MASK)) {}
 
-    [[nodiscard]] constexpr SlotIndex index() const noexcept {
+    [[nodiscard]] constexpr SlotIndex index() const noexcept
+    {
       return SlotIndex{bits & INDEX_MASK}; 
     }
 
-    [[nodiscard]] constexpr generation_type generation() const noexcept {
+    [[nodiscard]] constexpr generation_type generation() const noexcept
+    {
       return generation_type{bits >> INDEX_BITS};
     }
 
-    [[nodiscard]] constexpr bool is_null() const noexcept {
+    [[nodiscard]] constexpr bool is_null() const noexcept
+    {
       return index().is_null();
     }
 
