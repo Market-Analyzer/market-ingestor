@@ -4,10 +4,10 @@
 #include <cstdint>
 #include <bit>
 
+#include <market_ingestor/memory/types.hpp>
+
 namespace market_ingestor::memory
 {
-  inline constexpr std::uint32_t NULL_INDEX = 0;
-
   template<std::uint32_t N>
   struct Handle
   {
@@ -17,19 +17,28 @@ namespace market_ingestor::memory
     static constexpr std::uint32_t INDEX_BITS = std::countr_zero(N);
     static constexpr std::uint32_t INDEX_MASK = N - 1;
     static constexpr std::uint32_t GEN_BITS   = 32 - INDEX_BITS;
-    static constexpr std::uint32_t GEN_MASK   = (std::uint32_t{1} << GEN_BITS) - 1;
 
-    static_assert(INDEX_BITS < 32 , "N leaves no room for a generation stamp");
+    static_assert(GEN_BITS >= 8, "N leaves fewer than 8 generation bits");
+
+    using generation_type = Generation<GEN_BITS>;
 
     std::uint32_t bits = 0;
 
     constexpr Handle() noexcept = default;
-    constexpr Handle(std::uint32_t i, std::uint32_t g) noexcept
-      : bits(((g & GEN_MASK) << INDEX_BITS) | (i & INDEX_MASK)) {}
+    constexpr Handle(SlotIndex i, generation_type g) noexcept
+      : bits((g.value() << INDEX_BITS) | (i.value() & INDEX_MASK)) {}
 
-    [[nodiscard]] constexpr std::uint32_t index()      const noexcept { return bits & INDEX_MASK; }
-    [[nodiscard]] constexpr std::uint32_t generation() const noexcept { return bits >> INDEX_BITS; }
-    [[nodiscard]] constexpr bool          is_null()    const noexcept { return index() == NULL_INDEX; }
+    [[nodiscard]] constexpr SlotIndex index() const noexcept {
+      return SlotIndex{bits & INDEX_MASK}; 
+    }
+
+    [[nodiscard]] constexpr generation_type generation() const noexcept {
+      return generation_type{bits >> INDEX_BITS};
+    }
+
+    [[nodiscard]] constexpr bool is_null() const noexcept {
+      return index().is_null();
+    }
 
     friend constexpr bool operator==(Handle, Handle) noexcept = default;
   };
