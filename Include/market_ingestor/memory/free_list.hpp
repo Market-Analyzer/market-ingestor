@@ -16,9 +16,11 @@ namespace market_ingestor::memory
     static_assert(N > 1, "N counts slot 0, which is reserved as null");
 
   public:
-    constexpr FreeList() noexcept : top_(CAPACITY_) {
+    constexpr FreeList() noexcept : top_(CAPACITY_)
+    {
       available_indices_[0] = SlotIndex::null();
-      for (std::uint32_t k = 1; k <= CAPACITY_; ++k) {
+      for (std::uint32_t k = 1; k <= CAPACITY_; ++k)
+      {
         available_indices_[k] = SlotIndex{CAPACITY_ + 1 - k};
       }
     }
@@ -26,13 +28,15 @@ namespace market_ingestor::memory
     FreeList(const FreeList&) = delete;
     FreeList& operator=(const FreeList&) = delete;
 
-    [[nodiscard]] constexpr SlotIndex next() noexcept {
+    [[nodiscard]] constexpr SlotIndex next() noexcept
+    {
       const SlotIndex i = available_indices_[top_];
       top_ -= (top_ != 0);
       return i;
     }
 
-    [[nodiscard]] constexpr bool release(SlotIndex i) noexcept {
+    [[nodiscard]] constexpr bool release(SlotIndex i) noexcept
+    {
       if (i.is_null() || i.value() >= N || top_ >= CAPACITY_) [[unlikely]]
         return false;
       available_indices_[++top_] = i;
