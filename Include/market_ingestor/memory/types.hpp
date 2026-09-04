@@ -5,6 +5,11 @@
 
 namespace market_ingestor::memory
 {
+  // Opt-in marker for pool storage, used to state if an onject
+  // type is meant to live in an ObjectPool, so satisfying the 
+  // shape by alone is not enough (meant to show intent).
+  struct poolable_tag {};
+
   class SlotIndex
   {
   public:
