@@ -84,13 +84,14 @@ namespace market_ingestor::data
     OrderID   order_id_;  // 8 bytes
     Volume    volume_;    // 4 bytes
     Price     price_;     // 4 bytes
-    SymbolID  symbol_id_;
+    SymbolID  symbol_id_; // 4 bytes
     OrderSide side_;      // 1 byte
     OrderType type_;      // 1 byte
-
-    uint8_t   pad[2]{};   // 2 bytes
   };
+  
   static_assert(std::is_trivially_copyable_v<Order>, "Order must remain trivially copyable for pooling.");
+  static_assert(sizeof(Order)  == 24, "Order size must stay 24 bytes for pool packing");
+  static_assert(alignof(Order) == 8,  "Order alignment assumption changed");
 }
 
 #endif
