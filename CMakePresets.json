@@ -2,9 +2,9 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "windows-vs2022",
-      "generator": "Visual Studio 17 2022",
-      "binaryDir": "${sourceDir}/build/windows-vs2022",
+      "name": "windows-vs2026",
+      "generator": "Visual Studio 18 2026",
+      "binaryDir": "${sourceDir}/build/windows-vs2026",
       "architecture": {
         "value": "x64"
       },
@@ -14,24 +14,56 @@
       }
     },
     {
-      "name": "windows-vs2022-tests",
-      "inherits": "windows-vs2022",
-      "binaryDir": "${sourceDir}/build/windows-vs2022-tests",
+      "name": "windows-vs2026-tests",
+      "inherits": "windows-vs2026",
+      "binaryDir": "${sourceDir}/build/windows-vs2026-tests",
       "cacheVariables": {
         "BUILD_TESTING": "ON"
+      }
+    },
+    {
+      "name": "windows-bench",
+      "inherits": "windows-vs2026",
+      "displayName": "Benchmark (MSVC, optimized)",
+      "binaryDir": "${sourceDir}/build/windows-bench",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_RELEASE": "/O2 /Ob2 /DNDEBUG /Zi /arch:AVX2 /FAcs",
+        "CMAKE_EXE_LINKER_FLAGS_RELEASE": "/DEBUG /OPT:REF /OPT:ICF"
+      }
+    },
+    {
+      "name": "windows-bench-clang",
+      "inherits": "windows-vs2026",
+      "displayName": "Benchmark (clang-cl, optimized)",
+      "binaryDir": "${sourceDir}/build/windows-bench-clang",
+      "toolset": {
+        "value": "ClangCL"
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_RELEASE": "/O2 /DNDEBUG -march=native"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "windows-vs2022-debug",
-      "configurePreset": "windows-vs2022",
+      "name": "windows-vs2026-debug",
+      "configurePreset": "windows-vs2026",
       "configuration": "Debug"
     },
     {
-      "name": "windows-vs2022-tests-debug",
-      "configurePreset": "windows-vs2022-tests",
+      "name": "windows-vs2026-tests-debug",
+      "configurePreset": "windows-vs2026-tests",
       "configuration": "Debug"
+    },
+    {
+      "name": "windows-bench",
+      "configurePreset": "windows-bench",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-bench-clang",
+      "configurePreset": "windows-bench-clang",
+      "configuration": "Release"
     }
   ]
 }
