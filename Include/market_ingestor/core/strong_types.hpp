@@ -30,7 +30,7 @@ namespace market_ingestor::core
       lhs-=rhs;
       return lhs;
     }
-
+    
   private:
     T value_;
   };

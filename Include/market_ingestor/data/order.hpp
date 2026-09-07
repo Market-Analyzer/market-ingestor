@@ -4,7 +4,8 @@
 #include <cassert>
 #include <type_traits>
 
-#include "types.hpp"
+#include <market_ingestor/data/types.hpp>
+#include <market_ingestor/memory/types.hpp>
 
 namespace market_ingestor::data
 {
@@ -26,6 +27,7 @@ namespace market_ingestor::data
 
 
   struct OrderParams {
+    OrderID   id        = OrderID::sentinel();
     Volume    volume    = Volume{};
     Price     price     = Price{};
     SymbolID  symbol_id = SymbolID::sentinel();
@@ -34,9 +36,12 @@ namespace market_ingestor::data
   };
 
 
-  class alignas(32) Order 
+  class Order 
   {
   public:
+    using pool_category = memory::poolable_tag;
+    using params_type   = OrderParams;
+
     constexpr Order()
     : order_id_(OrderID::sentinel()), volume_{}, price_{},
       symbol_id_(SymbolID::sentinel()), side_(OrderSide::NONE),
@@ -46,21 +51,19 @@ namespace market_ingestor::data
     : order_id_(order_id), volume_(p.volume), price_(p.price),
       symbol_id_(p.symbol_id), side_(p.side), type_(p.type) {}
     
-    constexpr Order& reinitialize(OrderID order_id, OrderParams p)
+    constexpr void reinitialize(const params_type& p) noexcept
     {
-      order_id_  = order_id;
+      order_id_  = p.id;
       volume_    = p.volume;
       price_     = p.price;
       symbol_id_ = p.symbol_id;
       side_      = p.side; 
       type_      = p.type;
-
-      return *this;
     }
 
-    constexpr Order& reset()
+    constexpr void reset()
     {
-      return reinitialize(OrderID::sentinel(), OrderParams{Volume{}, Price{}, SymbolID::sentinel(), OrderSide::NONE, OrderType::UNKNOWN});
+      reinitialize(OrderParams{});
     }
 
     constexpr Order& fill(const Volume v)
@@ -78,18 +81,15 @@ namespace market_ingestor::data
     constexpr OrderType type()   const { return type_;      }
 
   private:
-    OrderID   order_id_;
-    Volume    volume_;
-    Price     price_;
+    OrderID   order_id_;  // 8 bytes
+    Volume    volume_;    // 4 bytes
+    Price     price_;     // 4 bytes
     SymbolID  symbol_id_;
-    OrderSide side_;
-    OrderType type_;
+    OrderSide side_;      // 1 byte
+    OrderType type_;      // 1 byte
 
-    uint8_t   pad[2]{};
+    uint8_t   pad[2]{};   // 2 bytes
   };
-
-  static_assert(sizeof(Order)  == 32, "Order struct must be exactly 32 bytes.");
-  static_assert(alignof(Order) == 32, "Order struct must be aligned to 32 bytes.");
   static_assert(std::is_trivially_copyable_v<Order>, "Order must remain trivially copyable for pooling.");
 }
 

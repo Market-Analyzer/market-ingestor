@@ -15,8 +15,8 @@ namespace market_ingestor::data
     struct OrderTag  {};
   }
 
-  using Volume = core::ArithmeticType<details::VolumeTag, std::uint64_t>;
-  using Price  = core::ArithmeticType<details::PriceTag,  std::int64_t>;
+  using Volume = core::ArithmeticType<details::VolumeTag, std::uint32_t>;
+  using Price  = core::ArithmeticType<details::PriceTag,  std::int32_t>;
 
   using SymbolID = core::DiscreteType<details::SymbolTag, std::uint32_t>;
   using OrderID  = core::DiscreteType<details::OrderTag,  std::uint64_t>;
