@@ -1,4 +1,7 @@
 /build/
 .vscode/
-.clangd
 .cache/
+
+# Symlink to the active build's compile database (see CMakeLists.txt).
+/compile_commands.json
+CMakeUserPresets.json

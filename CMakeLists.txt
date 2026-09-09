@@ -30,3 +30,33 @@ if(BUILD_TESTING)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+
+# Expose the compile database at the source root so tooling (clangd, clang-tidy,
+# IWYU) finds it with no per-editor config.
+#
+# Symlink preferred. Attempt then fallback on copy.
+if(PROJECT_IS_TOP_LEVEL AND CMAKE_EXPORT_COMPILE_COMMANDS)
+  file(CREATE_LINK
+    "${CMAKE_BINARY_DIR}/compile_commands.json"
+    "${CMAKE_SOURCE_DIR}/compile_commands.json"
+    SYMBOLIC
+    RESULT compile_db_link
+  )
+
+  if(NOT compile_db_link EQUAL 0)
+    # Symlink refused.
+    add_custom_command(
+      OUTPUT  "${CMAKE_SOURCE_DIR}/compile_commands.json"
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+              "${CMAKE_BINARY_DIR}/compile_commands.json"
+              "${CMAKE_SOURCE_DIR}/compile_commands.json"
+      DEPENDS "${CMAKE_BINARY_DIR}/compile_commands.json"
+      COMMENT "Copying compile_commands.json to source root (symlink unavailable)"
+      VERBATIM
+    )
+    add_custom_target(compile_db ALL
+      DEPENDS "${CMAKE_SOURCE_DIR}/compile_commands.json"
+    )
+  endif()
+endif()
