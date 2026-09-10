@@ -14,7 +14,7 @@ TEST(OrderTest, DefaultConstructedOrderIsSentinel) {
 
 TEST(OrderTest, ReinitializeSetsFields) {
   Order order;
-  order.reinitialize(OrderID{1}, OrderParams{Volume{100}, Price{5000}, SymbolID{7}, OrderSide::BID, OrderType::LIMIT});
+  order.reinitialize(OrderParams{OrderID{1}, Volume{100}, Price{5000}, SymbolID{7}, OrderSide::BID, OrderType::LIMIT});
 
   EXPECT_EQ(order.id(), OrderID{1});
   EXPECT_EQ(order.volume(), Volume{100});
@@ -26,7 +26,7 @@ TEST(OrderTest, ReinitializeSetsFields) {
 
 TEST(OrderTest, FillReducesVolume) {
   Order order;
-  order.reinitialize(OrderID{1}, OrderParams{Volume{100}, Price{5000}, SymbolID{7}, OrderSide::BID, OrderType::LIMIT});
+  order.reinitialize(OrderParams{OrderID{1}, Volume{100}, Price{5000}, SymbolID{7}, OrderSide::BID, OrderType::LIMIT});
   order.fill(Volume{40});
 
   EXPECT_EQ(order.volume(), Volume{60});
@@ -34,7 +34,7 @@ TEST(OrderTest, FillReducesVolume) {
 
 TEST(OrderTest, ResetReturnsToSentinelState) {
   Order order;
-  order.reinitialize(OrderID{1}, OrderParams{Volume{100}, Price{5000}, SymbolID{7}, OrderSide::BID, OrderType::LIMIT});
+  order.reinitialize(OrderParams{OrderID{1}, Volume{100}, Price{5000}, SymbolID{7}, OrderSide::BID, OrderType::LIMIT});
   order.reset();
 
   EXPECT_EQ(order.id(), OrderID::sentinel());
