@@ -7,13 +7,13 @@ using namespace market_ingestor::data;
 TEST(VolumeTest, DefaultConstructsToZero) {
   Volume v;
 
-  EXPECT_EQ(static_cast<uint64_t>(v), 0u);
+  EXPECT_EQ(static_cast<uint32_t>(v), 0u);
 }
 
 TEST(VolumeTest, ConstructsFromValue) {
   Volume v{42};
 
-  EXPECT_EQ(static_cast<uint64_t>(v), 42u);
+  EXPECT_EQ(static_cast<uint32_t>(v), 42u);
 }
 
 TEST(VolumeTest, AdditionSumsValues) {
@@ -48,7 +48,7 @@ TEST(VolumeTest, OrderingComparesUnderlyingValue) {
 TEST(PriceTest, SupportsNegativeValues) {
   Price p{-100};
 
-  EXPECT_EQ(static_cast<int64_t>(p), -100);
+  EXPECT_EQ(static_cast<int32_t>(p), -100);
 }
 
 TEST(PriceTest, SubtractionCanGoNegative) {
